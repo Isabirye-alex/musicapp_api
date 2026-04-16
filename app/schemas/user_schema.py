@@ -26,8 +26,6 @@ class UserCreate(BaseModel):
         return v
 
 
-
-
 class UserResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True, populate_by_name=True) 
 
@@ -35,3 +33,14 @@ class UserResponse(BaseModel):
     first_name: str
     last_name: str
     email: EmailStr
+
+class LoginRequest(BaseModel):
+    email: EmailStr
+    password_hash: str
+
+
+class AuthResponse(BaseModel):
+    user: UserResponse
+    token: str
+
+    model_config = ConfigDict(from_attributes=True)

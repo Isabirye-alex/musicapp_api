@@ -1,13 +1,11 @@
 from sqlalchemy.orm import Session
-from musicapp_api.app.core.password_hash import hash_password
-from musicapp_api.app.models.user_model import UserModel
-from musicapp_api.app.schemas.user_schema import UserCreate
+
 import uuid
 
+from app.core.password_hash import hash_password
+from app.models.user_model import UserModel
+from app.schemas.user_schema import UserCreate
 
-
-def get_user_by_email(db: Session, email: str):
-    return db.query(UserModel).filter(UserModel.email == email).first()
 
 
 def create_user(db: Session, user: UserCreate):

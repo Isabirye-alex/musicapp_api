@@ -1,11 +1,9 @@
 from sqlalchemy import VARCHAR, Column, LargeBinary, String
 from sqlalchemy.dialects.postgresql import UUID  # or use sqlalchemy UUID for generic
-from sqlalchemy.orm import DeclarativeBase
+
 import uuid
 
-
-class Base(DeclarativeBase):
-    pass
+from app.core.declarative_base_ import Base
 
 
 class UserModel(Base):

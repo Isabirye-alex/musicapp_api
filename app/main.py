@@ -1,12 +1,12 @@
 from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+from app.core.declarative_base_ import Base
 from app.db.session import engine
-from app.models.user_model import Base
 from app.api.v1.api import api_router
 
 
-app = FastAPI()
+app = FastAPI(title='Music App API', description='My API is gonna work as the backend server to my client application', version='1.0.0.0')
 Base.metadata.create_all(bind=engine)
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
