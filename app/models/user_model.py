@@ -3,7 +3,7 @@ from sqlalchemy.dialects.postgresql import UUID  # or use sqlalchemy UUID for ge
 
 import uuid
 
-from app.core.declarative_base_ import Base
+from app.core.base import Base
 
 
 class UserModel(Base):

@@ -41,6 +41,6 @@ class LoginRequest(BaseModel):
 
 class AuthResponse(BaseModel):
     user: UserResponse
-    token: str
+    access_token: str
 
     model_config = ConfigDict(from_attributes=True)

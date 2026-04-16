@@ -2,7 +2,7 @@ import cloudinary
 from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-from app.core.declarative_base_ import Base
+from app.core.base import Base
 from app.db.session import engine
 from app.api.v1.api import api_router
 from app.services.cloudinary import configure_cloudinary
