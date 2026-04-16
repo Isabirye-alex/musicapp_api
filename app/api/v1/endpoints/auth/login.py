@@ -6,12 +6,13 @@ from app.schemas.user_schema import AuthResponse, LoginRequest, UserResponse
 import jwt
 import secrets
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
 router = APIRouter()
 
 
-@router.post("/signin", response_model=UserResponse, status_code=status.HTTP_200_OK)
-@router.post("/signin", response_model=AuthResponse)
+@router.post("/signin", response_model=AuthResponse, status_code=status.HTTP_200_OK)
 def signin(credentials: LoginRequest, db: Session = Depends(get_db)):
     user_db, error = login_user(db, credentials.email, str(credentials.password_hash))
 
