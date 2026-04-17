@@ -22,6 +22,6 @@ def auth_middleware(x_auth_token = Header()):
 
         uid = auth_token.get("id")
 
-        return {'uid':uid, 'acccess_token': auth_token}
+        return {'id':uid, 'acccess_token': auth_token}
     except jwt.PyJWTError:
         raise HTTPException(401, "Token is invalid, Authorization failed")
