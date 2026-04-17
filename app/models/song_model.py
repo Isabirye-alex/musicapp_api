@@ -1,18 +1,23 @@
-
-import uuid
-
-from sqlalchemy import TEXT, UUID, VARCHAR, Column
+from sqlalchemy import TEXT, UUID, VARCHAR, Column, ForeignKey
 
 from app.core.base import Base
 
 
+from sqlalchemy import Column, ForeignKey, VARCHAR
+from sqlalchemy.orm import relationship
+
+
 class SongModel(Base):
+    __tablename__ = "songs"
 
-    __tablename__ = 'songs'
-
-    song_id = Column(UUID(as_uuid=True), primary_key=True,default=uuid.uuid4 )
+    song_id = Column(TEXT, primary_key=True)
     song_name = Column(VARCHAR(250), nullable=False)
     artist_name = Column(VARCHAR(250), nullable=False)
     song_url = Column(VARCHAR(250), nullable=False)
     thumbnail_url = Column(VARCHAR(250), nullable=True)
-    user_id = Column(VARCHAR(250), nullable=False)
+
+    user_id = Column(
+        UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False
+    )
+
+    hex_code = Column(VARCHAR(100), nullable=True)

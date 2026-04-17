@@ -7,8 +7,9 @@ class SongCreate(BaseModel):
     song_name: str
     artist_name: str
     song_url: str
-    thumbnail_url: str 
-    user_id: str
+    thumbnail_url: str
+    user_id: UUID
+    hex_code: str
 
     @field_validator("song_name", "artist_name", "song_url", "thumbnail_url")
     @classmethod
@@ -17,12 +18,14 @@ class SongCreate(BaseModel):
             raise ValueError("Field cannot be blank or whitespace")
         return v.strip()
 
+
 class SongResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
-    song_id: UUID
+    song_id: str
     song_name: str
     artist_name: str
     song_url: str
-    thumbnail_url: str 
-    user_id: str
+    thumbnail_url: str
+    user_id: UUID
+    hex_code: str

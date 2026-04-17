@@ -1,30 +1,34 @@
 import uuid
 
-from fastapi import APIRouter, Depends, File, Form, UploadFile
+from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
 import cloudinary.uploader
 from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.middleware.auth_middleware import auth_middleware
 from app.schemas.song_schema import SongCreate, SongResponse
 from app.crud.songs.song_crud import create_song
+
 router = APIRouter()
 
 
-@router.post("/upload", response_model=SongResponse)
+@router.post(
+    "/upload", response_model=SongResponse, status_code=status.HTTP_201_CREATED
+)
 def upload_song(
     song: UploadFile = File(...),
     thumbnail: UploadFile = File(...),
     artist_name: str = Form(...),
     song_name: str = Form(...),
+    hex_code: str = Form(...),
     db: Session = Depends(get_db),
-    user_dict= Depends(auth_middleware),
+    user_dict=Depends(auth_middleware),
 ):
     try:
         song_id = str(uuid.uuid4())
 
         # Upload song
         song_upload_result = cloudinary.uploader.upload(
-            song.file, resource_type="video", folder=f"songs/{song_id}"
+            song.file, resource_type="auto", folder=f"songs/{song_id}"
         )
 
         # Upload thumbnail
@@ -38,11 +42,12 @@ def upload_song(
 
         # Create schema object
         song_data = SongCreate(
-            user_id=user_dict['id'],
+            user_id=user_dict["id"],
             song_name=song_name,
             artist_name=artist_name,
             song_url=song_url,
             thumbnail_url=thumbnail_url,
+            hex_code=hex_code,
         )
 
         # Save to DB

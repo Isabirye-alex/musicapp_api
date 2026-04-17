@@ -16,6 +16,7 @@ def create_song(db: Session, song: SongCreate):
         artist_name=song.artist_name,
         song_url=song.song_url,
         thumbnail_url=song.thumbnail_url,
+        hex_code = song.hex_code
     )
     db.add(db_song)
     db.commit()
