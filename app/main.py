@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse
 from app.core.base import Base
 from app.db.session import engine
 from app.api.v1.api import api_router
-from app.services.cloudinary import configure_cloudinary
+from app.middleware.cloudinary_middleware import configure_cloudinary
 
 
 app = FastAPI(
