@@ -1,5 +1,3 @@
-
-
 from fastapi import Depends
 from sqlalchemy.orm import Session
 from app.db.session import get_db
@@ -8,7 +6,12 @@ from app.models.song_model import SongModel
 
 
 def fetch_all_user_songs(db: Session, user_dict: dict):
-    songs = db.query(SongModel).filter(SongModel.user_id == user_dict['id']).all()
+    songs = db.query(SongModel).filter(SongModel.user_id == user_dict["id"]).all()
 
     return songs
 
+
+def fetch_all_platform_songs(db: Session):
+    songs = db.query(SongModel).all()
+
+    return songs
