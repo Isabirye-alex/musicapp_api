@@ -1,17 +1,17 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Response
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+
 from app.crud.user.user_signup_crud import create_user
 from app.db.session import get_db
 from app.schemas.user_schema import UserCreate
 from app.services.fetch_use_by_email import get_user_by_email
-import jwt
-import os
-
 
 router = APIRouter()
 
+
 @router.post("/signup", status_code=status.HTTP_201_CREATED)
 def sign_up(user: UserCreate, db: Session = Depends(get_db)):
+    # Check if user exists
     existing = get_user_by_email(db, user.email)
     if existing:
         raise HTTPException(
@@ -19,5 +19,15 @@ def sign_up(user: UserCreate, db: Session = Depends(get_db)):
             detail="Email already registered",
         )
 
-    create_user(db, user)
-    return Response(status_code=status.HTTP_201_CREATED)
+    try:
+        new_user = create_user(db, user)
+
+        return {
+            "status": "success",
+            "message": "User created successfully"},
+          
+    except Exception as e:
+        # Proper server error handling
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)
+        )
