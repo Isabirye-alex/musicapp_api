@@ -31,19 +31,17 @@ async def upload_song(
         song.file.seek(0)
         thumbnail.file.seek(0)
 
- 
         # Upload SONG (Cloudinary)
- 
+
         song_upload_result = cloudinary.uploader.upload(
             song.file,
-            resource_type="video",  # required for audio/video
+            resource_type="video",  # rfor audio/video
             folder=f"songs/{song_id}",
-            chunk_size=6000000,  # handles large files safely
+            chunk_size=6000000,  # to handle large files safely
         )
 
- 
         # Upload THUMBNAIL
- 
+
         thumbnail_upload_result = cloudinary.uploader.upload(
             thumbnail.file,
             resource_type="image",
@@ -59,9 +57,8 @@ async def upload_song(
                 status_code=500, detail="Failed to retrieve uploaded file URLs"
             )
 
- 
         # Create DB object
- 
+
         song_data = SongCreate(
             user_id=user_dict["id"],
             song_name=song_name,
@@ -77,5 +74,5 @@ async def upload_song(
         return new_song
 
     except Exception as e:
-        # IMPORTANT: return proper JSON error (prevents Flutter crash)
+        #  return proper JSON error (prevents Flutter crash)
         raise HTTPException(status_code=500, detail=f"Error uploading song: {str(e)}")
