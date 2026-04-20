@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.middleware.auth_middleware import auth_middleware
 from app.schemas.song_schema import SongCreate, SongResponse
-from app.crud.songs.song_crud import create_song
+from app.crud.songs.song_upload_crud import create_song
 
 router = APIRouter()
 
@@ -28,7 +28,7 @@ def upload_song(
 
         # Upload song
         song_upload_result = cloudinary.uploader.upload(
-            song.file, resource_type="auto", folder=f"songs/{song_id}"
+            song.file, resource_type="video",format='mp3' ,folder=f"songs/{song_id}"
         )
 
         # Upload thumbnail
