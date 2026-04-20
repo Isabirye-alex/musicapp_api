@@ -22,10 +22,8 @@ def sign_up(user: UserCreate, db: Session = Depends(get_db)):
     try:
         new_user = create_user(db, user)
 
-        return {
-            "status": "success",
-            "message": "User created successfully"},
-          
+        return {"status": "success", "message": "User created successfully"}
+
     except Exception as e:
         # Proper server error handling
         raise HTTPException(
