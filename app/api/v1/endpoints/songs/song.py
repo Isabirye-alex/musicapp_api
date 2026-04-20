@@ -3,6 +3,7 @@ import uuid
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
 import cloudinary.uploader
 from sqlalchemy.orm import Session
+
 from app.db.session import get_db
 from app.middleware.auth_middleware import auth_middleware
 from app.schemas.song_schema import SongCreate, SongResponse
@@ -14,7 +15,7 @@ router = APIRouter()
 @router.post(
     "/upload", response_model=SongResponse, status_code=status.HTTP_201_CREATED
 )
-def upload_song(
+async def upload_song(
     song: UploadFile = File(...),
     thumbnail: UploadFile = File(...),
     artist_name: str = Form(...),
@@ -26,26 +27,41 @@ def upload_song(
     try:
         song_id = str(uuid.uuid4())
 
-        # Upload song
+        # Reset file pointers (VERY IMPORTANT)
+        song.file.seek(0)
+        thumbnail.file.seek(0)
+
+ 
+        # Upload SONG (Cloudinary)
+ 
         song_upload_result = cloudinary.uploader.upload(
             song.file,
-            resource_type="video",
-            format="mp3",
+            resource_type="video",  # required for audio/video
             folder=f"songs/{song_id}",
-            chunk_size=6000000,  # 6MB chunks
-            eager_async=True,
+            chunk_size=6000000,  # handles large files safely
         )
 
-        # Upload thumbnail
+ 
+        # Upload THUMBNAIL
+ 
         thumbnail_upload_result = cloudinary.uploader.upload(
-            thumbnail.file, resource_type="image", folder=f"songs/{song_id}"
+            thumbnail.file,
+            resource_type="image",
+            folder=f"songs/{song_id}",
         )
 
-        # Extract URLs
+        # Extract URLs safely
         song_url = song_upload_result.get("secure_url")
         thumbnail_url = thumbnail_upload_result.get("secure_url")
 
-        # Create schema object
+        if not song_url or not thumbnail_url:
+            raise HTTPException(
+                status_code=500, detail="Failed to retrieve uploaded file URLs"
+            )
+
+ 
+        # Create DB object
+ 
         song_data = SongCreate(
             user_id=user_dict["id"],
             song_name=song_name,
@@ -61,4 +77,5 @@ def upload_song(
         return new_song
 
     except Exception as e:
-        raise RuntimeError(f"Error uploading song: {str(e)}")
+        # IMPORTANT: return proper JSON error (prevents Flutter crash)
+        raise HTTPException(status_code=500, detail=f"Error uploading song: {str(e)}")
