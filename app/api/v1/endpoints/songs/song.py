@@ -28,8 +28,8 @@ async def upload_song(
         song_id = str(uuid.uuid4())
 
         # Reset file pointers
-        song.file.seek(0)
-        thumbnail.file.seek(0)
+        # song.file.seek(0)
+        # thumbnail.file.seek(0)
 
         # Upload SONG (Cloudinary)
 
