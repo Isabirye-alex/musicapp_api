@@ -33,18 +33,14 @@ def signin(credentials: LoginRequest, db: Session = Depends(get_db)):
 
 @router.get('/', response_model=UserResponse)
 def get_current_user(db: Session = Depends(get_db), user_dict = Depends(auth_middleware)):
-
+    
     try:
         user = db.query(UserModel).filter(UserModel.id == user_dict['id']).first()
 
         if not user:
             raise HTTPException(404, 'No user Found')
 
-        return {
-            "user": "user",
-            "status": "success"
-
-        } 
+        return user
     except Exception as e:
         # Proper server error handling
         raise HTTPException(
