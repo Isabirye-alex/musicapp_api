@@ -27,7 +27,7 @@ async def upload_song(
     try:
         song_id = str(uuid.uuid4())
 
-        # Reset file pointers (VERY IMPORTANT)
+        # Reset file pointers
         song.file.seek(0)
         thumbnail.file.seek(0)
 
