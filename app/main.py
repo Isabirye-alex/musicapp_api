@@ -26,3 +26,9 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 
 
 app.include_router(api_router, prefix="/api/v1")
+@app.get('/')
+def root():
+    return {
+        'status': 'connected',
+        'message': 'You are welcome'
+    }
