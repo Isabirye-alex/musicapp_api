@@ -28,7 +28,12 @@ def upload_song(
 
         # Upload song
         song_upload_result = cloudinary.uploader.upload(
-            song.file, resource_type="video",format='mp3' ,folder=f"songs/{song_id}"
+            song.file,
+            resource_type="video",
+            format="mp3",
+            folder=f"songs/{song_id}",
+            chunk_size=6000000,  # 6MB chunks
+            eager_async=True,
         )
 
         # Upload thumbnail
