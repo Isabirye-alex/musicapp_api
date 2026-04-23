@@ -1,7 +1,6 @@
 from fastapi import HTTPException, status, Depends, APIRouter
 from sqlalchemy.orm import Session
 from app.db.session import get_db
-from app.models.user_model import User
 from app.crud.user.user_delete import delete_user
 
 router = APIRouter()

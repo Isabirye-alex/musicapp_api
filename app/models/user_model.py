@@ -1,5 +1,6 @@
 from sqlalchemy import Boolean, Column, DateTime, Enum, String, Text, func
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 import uuid
 import enum
 
@@ -45,6 +46,9 @@ class UserModel(Base):
         server_default=func.now(),
         onupdate=func.now()
     )
+
+    songs = relationship("SongModel", cascade="all, delete-orphan")
+
 
     def __repr__(self):
         return f"<UserModel id={self.id} email={self.email} role={self.role}>"

@@ -32,7 +32,7 @@ def signin(credentials: LoginRequest, db: Session = Depends(get_db)):
     return {"user": user_db, "access_token": token}
 
 @router.get('/', response_model=UserResponse)
-def get_current_user(db: Session = Depends(get_db), user_dict = Depends(auth_middleware)):
+def get_current_user(db: Session = Depends(get_db), user_dict: dict = Depends(auth_middleware)):
     
     try:
         user = db.query(UserModel).filter(UserModel.id == user_dict['id']).first()

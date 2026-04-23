@@ -20,7 +20,7 @@ def update_user(
             detail="Not authorized to update this user",
         )
 
-    user = db.query(UserModel).filter(UserModel.id == user_id).first()
+    user = db.query(UserModel).filter(UserModel.id == user_id['id']).first()
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
