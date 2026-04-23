@@ -1,6 +1,8 @@
-from pydantic import BaseModel, EmailStr, Field, ConfigDict, field_validator
-from pydantic import BaseModel, EmailStr, ConfigDict
+from typing import Optional
+import re
+from datetime import datetime
 from uuid import UUID
+from pydantic import BaseModel, EmailStr, Field, ConfigDict, field_validator
 
 
 class UserCreate(BaseModel):
@@ -27,12 +29,38 @@ class UserCreate(BaseModel):
 
 
 class UserResponse(BaseModel):
-    model_config = ConfigDict(from_attributes=True, populate_by_name=True) 
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
     id: UUID
     first_name: str
     last_name: str
     email: EmailStr
+    role: str
+    is_active: bool
+    created_at: datetime
+    updated_at: datetime
+
+
+class UserUpdate(BaseModel):
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
+
+    first_name: Optional[str] = Field(default=None, min_length=1, max_length=250)
+    last_name: Optional[str] = Field(default=None, min_length=1, max_length=250)
+    email: Optional[EmailStr] = None
+    
+
+    @field_validator("first_name", "last_name", mode="before")
+    @classmethod
+    def strip_and_validate_name(cls, v: Optional[str]) -> Optional[str]:
+        if v is None:
+            return v
+        stripped = v.strip()
+        if not stripped:
+            raise ValueError("Name fields cannot be blank or whitespace only")
+        if not re.match(r"^[a-zA-Z\s\-']+$", stripped):
+            raise ValueError("Name fields can only contain letters, spaces, hyphens, and apostrophes")
+        return stripped
+
 
 class LoginRequest(BaseModel):
     email: EmailStr
@@ -40,7 +68,7 @@ class LoginRequest(BaseModel):
 
 
 class AuthResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     user: UserResponse
     access_token: str
-
-    model_config = ConfigDict(from_attributes=True)
