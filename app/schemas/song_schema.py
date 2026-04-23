@@ -29,3 +29,4 @@ class SongResponse(BaseModel):
     thumbnail_url: str
     user_id: UUID
     hex_code: str
+    is_favorite: bool = Field(default=False)
