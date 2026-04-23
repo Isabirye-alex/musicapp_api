@@ -1,27 +1,16 @@
-from fastapi import HTTPException, status, Depends, APIRouter
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.middleware.auth_middleware import auth_middleware
-from app.schemas.user_schema import UserUpdate
+from app.schemas.user_schema import UserUpdate, UserResponse
 from app.crud.user.user_update import update_user
-
 
 router = APIRouter()
 
-current_user = Depends(auth_middleware)
-
-@router.patch("/update", response_model=UserUpdate)
+@router.patch("/update", response_model=UserResponse)  # ← UserUpdate → UserResponse
 def update_user_endpoint(
     user_update: UserUpdate,
     db: Session = Depends(get_db),
     current_user: dict = Depends(auth_middleware)
-    
 ):
-    try:
-        updated_user = update_user(current_user["id"], user_update, db)
-        return updated_user
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="An error occurred while updating the user",
-        )
+    return update_user( user_update, db, current_user)

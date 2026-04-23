@@ -10,7 +10,6 @@ from app.core.base import Base
 class UserRole(str, enum.Enum):
     USER = "user"
     ADMIN = "admin"
-    MODERATOR = "moderator"
 
 
 class UserModel(Base):

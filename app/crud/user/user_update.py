@@ -2,7 +2,7 @@ from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from app.schemas.user_schema import UserUpdate
-from app.models.user_model import UserModel
+from app.models.user_model import UserModel, UserRole
 import logging
 
 logger = logging.getLogger(__name__)
@@ -11,26 +11,28 @@ PROTECTED_FIELDS = {"id", "role", "is_active", "created_at", "hashed_password"}
 
 
 def update_user(
-    user_id: dict, user_update: UserUpdate, db: Session, current_user: UserModel
+    user_update: UserUpdate, db: Session, current_user: dict
 ):
-    # Authorization: only allow self-update or admin
-    if current_user.id != user_id and not current_user.role == "admin":
+    user = db.query(UserModel).filter(UserModel.id == current_user['id']).first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
+        )
+        # Authorization: only allow self-update or admin
+    if current_user['id'] != str(user.id) and not user.role == UserRole.ADMIN:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not authorized to update this user",
         )
 
-    user = db.query(UserModel).filter(UserModel.id == user_id['id']).first()
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
-        )
 
     # strip protected fields
     update_data = {
         key: value
         for key, value in user_update.model_dump(exclude_unset=True).items()
         if key not in PROTECTED_FIELDS
+        if user_update.conta
+            
     }
 
     if not update_data:
@@ -47,7 +49,7 @@ def update_user(
         db.refresh(user)
     except SQLAlchemyError as e:
         db.rollback()
-        logger.error("Failed to update user %s: %s", user_id, e)
+        logger.error("Failed to update user %s: %s", current_user['id'], e)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="An error occurred while updating the user",
