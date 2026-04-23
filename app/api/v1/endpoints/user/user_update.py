@@ -8,7 +8,7 @@ from app.crud.user.user_update import update_user
 
 router = APIRouter()
 @router.patch("/update/{user_id}", response_model=UserUpdate)
-def update_user_endpoint(user_id: str, user_update: UserUpdate, db: Session = Depends(get_db), current_user: dict = Depends(auth_middleware)): 
+def update_user_endpoint(user_update: UserUpdate, db: Session = Depends(get_db), current_user: dict = Depends(auth_middleware)): 
     try:
         updated_user = update_user(current_user['id'], user_update, db)
         return updated_user
