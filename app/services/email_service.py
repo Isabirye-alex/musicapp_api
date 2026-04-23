@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
 from sqlalchemy import DateTime
 from sqlalchemy import DateTime
@@ -16,6 +18,8 @@ mail_config = ConnectionConfig(
     USE_CREDENTIALS=True,
     VALIDATE_CERTS=True,
 )
+
+year = datetime.now().year
 
 
 def _render_registration_html(first_name: str, last_name: str) -> str:
@@ -41,7 +45,7 @@ def _render_registration_html(first_name: str, last_name: str) -> str:
           </tr>
           <tr>
             <td style="padding: 24px; text-align: center; font-size: 12px; color: #94a3b8; border-top: 1px solid #e2e8f0;">
-                 &copy; ${DateTime.now().year} Music App. All rights reserved.
+                 &copy; ${year} Music App. All rights reserved.
         </td>
           </tr>
         </table>
