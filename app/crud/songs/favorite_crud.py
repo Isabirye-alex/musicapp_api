@@ -46,3 +46,28 @@ def fetch_favorite_songs(db: Session, user_id: str) -> list[SongModel]:
         .filter(FavoriteSongsModel.user_id == user_id)
         .all()
     )
+
+
+def toggle_favorite_song(db: Session, user_id: str, song_id: str) -> dict:
+    """Toggle favorite status for a song. Returns the new favorite status."""
+    song = db.query(SongModel).filter(SongModel.song_id == song_id).first()
+    if not song:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Song not found")
+
+    existing_favorite = (
+        db.query(FavoriteSongsModel)
+        .filter(FavoriteSongsModel.user_id == user_id, FavoriteSongsModel.song_id == song_id)
+        .first()
+    )
+
+    if existing_favorite:
+        # Remove from favorites
+        db.delete(existing_favorite)
+        db.commit()
+        return {"is_favorite": False, "message": "Song removed from favorites"}
+    else:
+        # Add to favorites
+        favorite = FavoriteSongsModel(id=uuid.uuid4(), user_id=user_id, song_id=song_id)
+        db.add(favorite)
+        db.commit()
+        return {"is_favorite": True, "message": "Song added to favorites"}
