@@ -1,13 +1,21 @@
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
+from uuid import UUID
+
 from app.models.user_model import UserModel
 
 
 def delete_user(user_id: str, db: Session):
-    user = db.query(UserModel).filter(UserModel.id == user_id).first()
-    if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    try:
+        user_uuid = UUID(user_id)
+    except ValueError:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid user ID format")
+
+    user = db.query(UserModel).filter(UserModel.id == user_uuid).first()
     
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found. Please log in again.")
+
     db.delete(user)
     db.commit()
     return None
