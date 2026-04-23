@@ -33,14 +33,12 @@ class UserModel(Base):
         nullable=False,
         default=UserRole.USER
     )
-    
-    # Fixed: was DateTime — should be Boolean
+
     is_active = Column(Boolean, nullable=False, default=True)
     
-    # Fixed: use func.now() instead of the string "now()"
+
     created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
-    
-    # Fixed: onupdate keeps this accurate on every UPDATE
+
     updated_at = Column(
         DateTime(timezone=True),
         nullable=False,
