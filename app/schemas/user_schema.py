@@ -10,6 +10,7 @@ class UserCreate(BaseModel):
     last_name: str
     email: EmailStr
     password_hash: str = Field(min_length=8, max_length=64)
+    role: Optional[str] = Field(default="user")
 
     @field_validator("first_name", "last_name")
     @classmethod
