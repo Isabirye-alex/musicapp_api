@@ -1,0 +1,24 @@
+.page-header {
+  margin-bottom: 2rem;
+}
+
+.mb-8 {
+  margin-bottom: 2rem;
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+.chart-section {
+  padding: 1.5rem;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-container {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+}

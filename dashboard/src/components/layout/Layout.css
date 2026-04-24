@@ -1,0 +1,4 @@
+.main-content {
+  margin-left: 260px; /* Width of sidebar */
+  width: calc(100% - 260px);
+}
