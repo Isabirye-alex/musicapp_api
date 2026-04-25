@@ -4,13 +4,12 @@ from app.db.session import get_db
 from app.middleware.auth_middleware import auth_middleware
 from app.models.song_model import SongModel
 from app.models.favorite_songs_model import FavoriteSongsModel
-from sqlalchemy import bool_or
+from sqlalchemy import bool
 
 
 def fetch_all_user_songs(db: Session, user_dict: dict):
     songs = db.query(SongModel).filter(SongModel.user_id == user_dict["id"]).all()
 
-    # Add is_favorite field
     for song in songs:
         favorite = (
             db.query(FavoriteSongsModel)
