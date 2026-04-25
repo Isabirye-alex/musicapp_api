@@ -12,12 +12,10 @@ router = APIRouter()
 @router.get("/all", response_model=List[SongResponse], status_code=status.HTTP_200_OK)
 def get_all_platform_songs(
     db: Session = Depends(get_db),
-    user_dict: dict = Depends(auth_middleware),  # Added back for is_favorite
+    user_dict: dict | None = Depends(auth_middleware),
 ):
     try:
-        songs = fetch_all_platform_songs(db, user_dict)  # Pass user_dict
-        if not songs:
-            return []
+        songs = fetch_all_platform_songs(db, user_dict)
         return songs
     except Exception as e:
         raise RuntimeError(f"Error retrieving songs: {e}")

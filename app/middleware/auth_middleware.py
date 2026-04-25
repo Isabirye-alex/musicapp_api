@@ -3,11 +3,11 @@ from fastapi import HTTPException, Header
 import jwt
 
 
-def auth_middleware(x_auth_token = Header()):
+def auth_middleware(x_auth_token=Header() | None):
     try:
         # Get token from header
         if not x_auth_token:
-            raise HTTPException(401, "No auth token found, Authorization denied")
+            return None
 
         # Decode token
         SECRET_KEY = os.getenv("SECRET_KEY")
@@ -22,6 +22,6 @@ def auth_middleware(x_auth_token = Header()):
 
         uid = auth_token.get("id")
 
-        return {'id':uid, 'acccess_token': auth_token}
+        return {"id": uid, "acccess_token": auth_token}
     except jwt.PyJWTError:
         raise HTTPException(401, "Token is invalid, Authorization failed")

@@ -15,7 +15,7 @@ def fetch_all_user_songs(db: Session, user_dict: dict):
             db.query(FavoriteSongsModel)
             .filter(
                 FavoriteSongsModel.user_id == user_dict["id"],
-                FavoriteSongsModel.song_id == song.song_id
+                FavoriteSongsModel.song_id == song.song_id,
             )
             .first()
         )
@@ -28,15 +28,19 @@ def fetch_all_platform_songs(db: Session, user_dict: dict):
     songs = db.query(SongModel).all()
 
     # Add is_favorite field for each song
-    for song in songs:
-        favorite = (
-            db.query(FavoriteSongsModel)
-            .filter(
-                FavoriteSongsModel.user_id == user_dict["id"],
-                FavoriteSongsModel.song_id == song.song_id
+    if user_dict:
+        for song in songs:
+            favorite = (
+                db.query(FavoriteSongsModel)
+                .filter(
+                    FavoriteSongsModel.user_id == user_dict["id"],
+                    FavoriteSongsModel.song_id == song.song_id,
+                )
+                .first()
             )
-            .first()
-        )
-        setattr(song, "is_favorite", favorite is not None)
+            setattr(song, "is_favorite", favorite is not None)
+    else:
+        for song in songs:
+            setattr(song, "is_favorite", False)
 
     return songs
