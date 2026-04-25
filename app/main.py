@@ -9,9 +9,9 @@ from app.middleware.cloudinary_middleware import configure_cloudinary
 
 
 app = FastAPI(
-    title="Music App API",
-    description="My API is gonna work as the backend server to my client application",
-    version="1.0.0.0",
+    title="ATLAS MUSIC API",
+    description="A comprehensive Music Streaming API that serves as the backend for managing music metadata, user authentication, and streaming services. This API provides endpoints for tracks, albums, artists, and playlists, supporting a full-featured music application experience.",
+    version="1.0.0",
 )
 Base.metadata.create_all(bind=engine)
 configure_cloudinary()
@@ -26,9 +26,8 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 
 
 app.include_router(api_router, prefix="/api/v1")
-@app.get('/')
+
+
+@app.get("/")
 def root():
-    return {
-        'status': 'connected',
-        'message': 'You are welcome'
-    }
+    return {"status": "connected", "message": "You are welcome"}
