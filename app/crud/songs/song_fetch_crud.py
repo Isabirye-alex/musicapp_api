@@ -4,7 +4,6 @@ from app.db.session import get_db
 from app.middleware.auth_middleware import auth_middleware
 from app.models.song_model import SongModel
 from app.models.favorite_songs_model import FavoriteSongsModel
-from sqlalchemy import bool
 
 
 def fetch_all_user_songs(db: Session, user_dict: dict):
@@ -24,20 +23,25 @@ def fetch_all_user_songs(db: Session, user_dict: dict):
     return songs
 
 
-def fetch_all_platform_songs(db: Session, user_dict: dict | None):
-    user_id = user_dict.get("id") if user_dict else None
+def fetch_all_platform_songs(db: Session, user_dict: dict | None = None):
 
-    query = db.query(
-        SongModel, (FavoriteSongsModel.user_id == user_id).label("is_favorite")
-    ).outerjoin(
-        FavoriteSongsModel,
-        (FavoriteSongsModel.song_id == SongModel.song_id)
-        & (FavoriteSongsModel.user_id == user_id),
-    )
+    songs = db.query(SongModel).all()
 
-    results = query.all()
+    if not user_dict:
+        for song in songs:
+            song.is_favorite = False
+        return songs
 
-    for song, is_fav in results:
-        song.is_favorite = bool(is_fav)
+    user_id = user_dict.get("id")
 
-    return [r[0] for r in results]
+    favorite_ids = {
+        res[0]
+        for res in db.query(FavoriteSongsModel.song_id)
+        .filter(FavoriteSongsModel.user_id == user_id)
+        .all()
+    }
+
+    for song in songs:
+        song.is_favorite = song.song_id in favorite_ids
+
+    return songs
