@@ -3,7 +3,7 @@ from fastapi import HTTPException, Header
 import jwt
 
 
-def auth_middleware(x_auth_token=Header() | None):
+def auth_middleware(x_auth_token: str | None = Header(default=None)):
     try:
         # Get token from header
         if not x_auth_token:
