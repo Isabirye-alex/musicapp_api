@@ -2,6 +2,7 @@ import cloudinary
 from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 from app.core.base import Base
 from app.db.session import engine
 from app.api.v1.api import api_router
@@ -13,6 +14,15 @@ app = FastAPI(
     description="A comprehensive Music Streaming API that serves as the backend for managing music metadata, user authentication, and streaming services. This API provides endpoints for tracks, albums, artists, and playlists, supporting a full-featured music application experience.",
     version="1.0.0",
 )
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 Base.metadata.create_all(bind=engine)
 configure_cloudinary()
 
