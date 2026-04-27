@@ -1,7 +1,7 @@
 from pydantic import BaseModel, EmailStr, Field, ConfigDict, field_validator
 from pydantic import BaseModel, EmailStr, ConfigDict
 from uuid import UUID
-
+from datetime import datetime
 
 class SongCreate(BaseModel):
     song_name: str
@@ -30,3 +30,5 @@ class SongResponse(BaseModel):
     user_id: UUID
     hex_code: str
     is_favorite: bool = Field(default=False)
+    created_at: datetime
+    updated_at: datetime    

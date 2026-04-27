@@ -3,13 +3,7 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     # Database
-    DB_USER: str
-    DB_PASSWORD: str
-    DB_HOST: str
-    DB_PORT: str
-    DB_NAME: str
     DATABASE_URL: str
-   
 
     # Cloudinary
     API_KEY: str
@@ -26,7 +20,7 @@ class Settings(BaseSettings):
     MAIL_TLS: bool = True
     MAIL_SSL: bool = False
     MAIL_STARTTLS: bool = True
-    MAIL_SSL_TLS : bool = False
+    MAIL_SSL_TLS: bool = False
 
     # App
     SECRET_KEY: str
@@ -37,11 +31,7 @@ class Settings(BaseSettings):
 
     @property
     def DATABASE_URL(self) -> str:
-        return (
-            f"{self.DATABASE_URL}"
-        )
-
-        
+        return f"{self.DATABASE_URL}"
 
 
 settings = Settings()

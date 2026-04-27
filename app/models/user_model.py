@@ -23,8 +23,7 @@ class UserModel(Base):
     first_name = Column(String(250), nullable=False)
     last_name = Column(String(250), nullable=False)
     email = Column(String(250), nullable=False, unique=True, index=True)
-    
-    # Text avoids truncation for longer hash algorithms (Argon2, scrypt)
+
     password_hash = Column(Text, nullable=False)
     
     # Enum enforces valid roles at the DB level
