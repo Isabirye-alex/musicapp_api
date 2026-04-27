@@ -23,9 +23,11 @@ def fetch_all_user_songs(db: Session, user_dict: dict):
     return songs
 
 
-def fetch_all_platform_songs(db: Session, user_dict: dict | None = None):
+def fetch_all_platform_songs(
+    db: Session, limit: int, offset: int, user_dict: dict | None = None
+):
 
-    songs = db.query(SongModel).all()
+    songs = db.query(SongModel).order_by("created_at").offset(offset).limit(limit).all()
 
     if not user_dict:
         for song in songs:

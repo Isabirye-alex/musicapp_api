@@ -5,6 +5,7 @@ from alembic import context
 from app.core.base import Base
 from app.models.user_model import UserModel
 from app.models.song_model import SongModel
+from app.models.favorite_songs_model import FavoriteSongsModel
 
 from app.core.config import settings
 
