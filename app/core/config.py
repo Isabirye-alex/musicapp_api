@@ -8,6 +8,8 @@ class Settings(BaseSettings):
     DB_HOST: str
     DB_PORT: str
     DB_NAME: str
+    DATABASE_URL: str
+   
 
     # Cloudinary
     API_KEY: str
@@ -36,9 +38,10 @@ class Settings(BaseSettings):
     @property
     def DATABASE_URL(self) -> str:
         return (
-            f"postgresql+psycopg2://{self.DB_USER}:{self.DB_PASSWORD}"
-            f"@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}?sslmode=require"
+            f"{self.DATABASE_URL}"
         )
+
+        
 
 
 settings = Settings()
