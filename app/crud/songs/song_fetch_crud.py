@@ -24,10 +24,22 @@ def fetch_all_user_songs(db: Session, user_dict: dict):
 
 
 def fetch_all_platform_songs(
-    db: Session, limit: int, offset: int, user_dict: dict | None = None
+    db: Session,
+    limit: int,
+    offset: int,
+    sort: str,
+    user_dict: dict | None = None,
 ):
 
-    songs = db.query(SongModel).order_by("created_at").offset(offset).limit(limit).all()
+    query = db.query(SongModel)
+
+    if sort == "newest":
+        query = query.order_by(SongModel.created_at.desc())
+    elif sort == "oldest":
+        query = query.order_by(SongModel.created_at.asc())
+    elif sort == "name":
+        query = query.order_by(SongModel.song_name.asc())
+    songs = query.offset(offset).limit(limit).all()
 
     if not user_dict:
         for song in songs:

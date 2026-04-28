@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, HTTPException, status, Depends, Query
 from sqlalchemy.orm import Session
 from app.crud.songs.song_fetch_crud import fetch_all_platform_songs
 from app.db.session import get_db
@@ -18,10 +18,11 @@ def get_all_platform_songs(
     limit: int,
     offset: int,
     db: Session = Depends(get_db),
+    sort: str = Query(default='newest'),
     user_dict: dict | None = Depends(auth_middleware),
 ):
     try:
-        songs = fetch_all_platform_songs(db,limit, offset, user_dict)
+        songs = fetch_all_platform_songs(db,limit, offset,sort ,user_dict)
         return songs
     except Exception as e:
         raise RuntimeError(f"Error retrieving songs: {e}")
