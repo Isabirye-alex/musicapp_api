@@ -34,7 +34,7 @@ def fetch_all_platform_songs(
     query = db.query(SongModel)
 
     if sort == "newest":
-        query = query.order_by(SongModel.created_at.desc())
+        query = query.order_by(SongModel.created_at.asc())
     elif sort == "oldest":
         query = query.order_by(SongModel.created_at.asc())
     elif sort == "name":
