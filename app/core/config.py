@@ -1,5 +1,5 @@
 from pydantic_settings import BaseSettings
-
+import json
 
 class Settings(BaseSettings):
     # Database
@@ -23,8 +23,8 @@ class Settings(BaseSettings):
     MAIL_SSL_TLS: bool = False
 
     #  Firebase
-    FIREBASE_CREDENTIALS: str
-    FIREBASE_BUCKET_NAME: str
+    FIREBASE_CREDENTIALS: json
+  
 
     # App
     SECRET_KEY: str

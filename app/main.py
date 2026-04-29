@@ -10,6 +10,7 @@ from app.middleware.cloudinary_middleware import configure_cloudinary
 from firebase_admin import credentials, messaging
 import firebase_admin
 from app.core.config import settings
+import json
 
 app = FastAPI(
     title="ATLAS MUSIC API",
@@ -17,7 +18,7 @@ app = FastAPI(
     version="1.0.0",
 )
 
-cred = credentials.Certificate(settings.FIREBASE_CREDENTIALS)
+cred = credentials.Certificate(json.loads(settings.FIREBASE_CREDENTIALS))
 firebase_admin.initialize_app(cred)
 
 app.add_middleware(
