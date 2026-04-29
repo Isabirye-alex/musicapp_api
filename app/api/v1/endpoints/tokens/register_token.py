@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.schemas.token.device_token_schema import RegisterTokenRequest
 from app.models.tokens.device_token_model import DeviceTokenModel
-from app.middleware.auth_middleware import auth_middlware
+from app.middleware.auth_middleware import auth_middleware
 
 router = APIRouter()
 
@@ -12,7 +12,7 @@ router = APIRouter()
 async def register_token(
     request: RegisterTokenRequest,
     db: Session = Depends(get_db),
-    user_dict: dict | None = Depends(auth_middlware),
+    user_dict: dict | None = Depends(auth_middleware),
 ):
     existing = db.query(DeviceTokenModel).filter_by(token=request.token).first()
 
