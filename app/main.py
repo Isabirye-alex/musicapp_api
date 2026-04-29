@@ -9,6 +9,7 @@ from app.api.v1.api import api_router
 from app.middleware.cloudinary_middleware import configure_cloudinary
 from firebase_admin import credentials, messaging
 import firebase_admin
+from app.core.config import settings
 
 app = FastAPI(
     title="ATLAS MUSIC API",
@@ -16,7 +17,7 @@ app = FastAPI(
     version="1.0.0",
 )
 
-cred = credentials.Certificate("musicapp-7aabf-firebase-adminsdk-fbsvc-e407646a94.json")
+cred = credentials.Certificate(settings.FIREBASE_CREDENTIALS)
 firebase_admin.initialize_app(cred)
 
 app.add_middleware(

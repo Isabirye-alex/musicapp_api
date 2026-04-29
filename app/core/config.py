@@ -22,6 +22,10 @@ class Settings(BaseSettings):
     MAIL_STARTTLS: bool = True
     MAIL_SSL_TLS: bool = False
 
+    #  Firebase
+    FIREBASE_CREDENTIALS: str
+    FIREBASE_BUCKET_NAME: str
+
     # App
     SECRET_KEY: str
 
