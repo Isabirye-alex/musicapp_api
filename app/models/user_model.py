@@ -15,38 +15,29 @@ class UserRole(str, enum.Enum):
 class UserModel(Base):
     __tablename__ = "users"
 
-    id = Column(
-        UUID(as_uuid=True),
-        primary_key=True,
-        default=uuid.uuid4
-    )
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     first_name = Column(String(250), nullable=False)
     last_name = Column(String(250), nullable=False)
     email = Column(String(250), nullable=False, unique=True, index=True)
+    user_avatar = Column(String(250), nullable=True)
 
-    password_hash = Column(Text, nullable=False)
-    
-    # Enum enforces valid roles at the DB level
+    password_hash = Column(Text, nullable=True, default="!google_auth_sign_in")
+
     role = Column(
-        Enum(UserRole, name="user_role_enum"),
-        nullable=False,
-        default=UserRole.USER
+        Enum(UserRole, name="user_role_enum"), nullable=False, default=UserRole.USER
     )
 
     is_active = Column(Boolean, nullable=False, default=True)
-    
 
-    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
 
     updated_at = Column(
         DateTime(timezone=True),
         nullable=False,
         server_default=func.now(),
-        onupdate=func.now()
+        onupdate=func.now(),
     )
 
     songs = relationship("SongModel", cascade="all, delete-orphan")
-
-
-    def __repr__(self):
-        return f"<UserModel id={self.id} email={self.email} role={self.role}>"

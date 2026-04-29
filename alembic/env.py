@@ -6,6 +6,7 @@ from app.core.base import Base
 from app.models.user_model import UserModel
 from app.models.song_model import SongModel
 from app.models.favorite_songs_model import FavoriteSongsModel
+from app.models.tokens.device_token_model import DeviceTokenModel
 
 from app.core.config import settings
 
@@ -32,10 +33,7 @@ def run_migrations_online() -> None:
     connectable = create_engine(settings.DATABASE_URL, poolclass=pool.NullPool)
 
     with connectable.connect() as connection:
-        context.configure(
-            connection=connection,
-            target_metadata=target_metadata
-        )
+        context.configure(connection=connection, target_metadata=target_metadata)
         with context.begin_transaction():
             context.run_migrations()
 

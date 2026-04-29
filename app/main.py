@@ -7,13 +7,17 @@ from app.core.base import Base
 from app.db.session import engine
 from app.api.v1.api import api_router
 from app.middleware.cloudinary_middleware import configure_cloudinary
-
+from firebase_admin import credentials, messaging
+import firebase_admin
 
 app = FastAPI(
     title="ATLAS MUSIC API",
     description="A comprehensive Music Streaming API that serves as the backend for managing music metadata, user authentication, and streaming services. This API provides endpoints for tracks, albums, artists, and playlists, supporting a full-featured music application experience.",
     version="1.0.0",
 )
+
+cred = credentials.Certificate("musicapp-7aabf-firebase-adminsdk-fbsvc-e407646a94.json")
+firebase_admin.initialize_app(cred)
 
 app.add_middleware(
     CORSMiddleware,
