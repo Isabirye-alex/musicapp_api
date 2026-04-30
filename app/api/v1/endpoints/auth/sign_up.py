@@ -9,7 +9,6 @@ from app.services.email_service import send_registration_email
 
 router = APIRouter()
 
-
 @router.post("/signup", status_code=status.HTTP_201_CREATED)
 def sign_up(
     user: UserCreate,
