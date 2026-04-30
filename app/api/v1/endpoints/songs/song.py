@@ -8,6 +8,7 @@ from app.db.session import get_db
 from app.middleware.auth_middleware import auth_middleware
 from app.schemas.song_schema import SongCreate, SongResponse
 from app.crud.songs.song_upload_crud import create_song
+from app.crud.songs.song_delete_crud import delete_song_by_id
 
 router = APIRouter()
 
@@ -74,3 +75,20 @@ async def upload_song(
     except Exception as e:
         #  return proper JSON error (prevents Flutter crash)
         raise HTTPException(status_code=500, detail=f"Error uploading song: {str(e)}")
+
+@router.delete("/{song_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_song(
+    song_id: str,
+    db: Session = Depends(get_db),
+    user_dict=Depends(auth_middleware),
+):
+    try:
+        success = delete_song_by_id(db, song_id)
+        if not success:
+            raise HTTPException(status_code=404, detail="Song not found")
+        return None
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error deleting song: {str(e)}")
+
