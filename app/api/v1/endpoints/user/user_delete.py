@@ -7,12 +7,16 @@ from app.middleware.auth_middleware import auth_middleware
 router = APIRouter()
 
 
-@router.delete("/delete", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/delete/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_user_endpoint(
-    db: Session = Depends(get_db), current_user: dict = Depends(auth_middleware)
+    user_id: str,
+    db: Session = Depends(get_db), 
+    current_user: dict = Depends(auth_middleware)
 ):
     try:
-        delete_user(current_user["id"], db)
+        delete_user(user_id, db)
+    except HTTPException:
+        raise
     except Exception as e:
         print(f"Error deleting user: {e}")
         raise HTTPException(

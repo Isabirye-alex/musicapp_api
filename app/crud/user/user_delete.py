@@ -23,12 +23,10 @@ def delete_user(user_id: str, db: Session):
             detail="User not found. Please log in again."
         )
     
-    # Performing Soft Delete
     user.is_active = False
     
     try:
         db.commit()
-        # Optional: refresh to confirm the state in the current session
         db.refresh(user)
     except Exception:
         db.rollback()
