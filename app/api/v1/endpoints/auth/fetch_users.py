@@ -10,10 +10,11 @@ from app.middleware.auth_middleware import auth_middleware
 
 router = APIRouter()
 
-@router.get('/users', response_model=List[UserResponse], status_code=status.HTTP_200_OK)
-def get_users(db: Session = Depends(get_db), user_dict: dict = Depends(auth_middleware)):
-    users = fetch_users(db)
+
+@router.get("/users", response_model=List[UserResponse], status_code=status.HTTP_200_OK)
+def get_users(
+    db: Session = Depends(get_db), user_dict: dict = Depends(auth_middleware)
+):
+    users = fetch_users(db, user_dict["id"])
 
     return users
-
-
