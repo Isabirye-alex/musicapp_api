@@ -2,7 +2,6 @@ import os
 from fastapi import HTTPException, Header
 import jwt
 
-
 def auth_middleware(
     x_auth_token: str | None = Header(default=None),
     authorization: str | None = Header(default=None)
