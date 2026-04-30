@@ -9,8 +9,12 @@ router = APIRouter()
 
 
 @router.get("/list", response_model=List[SongResponse], status_code=status.HTTP_200_OK)
+@router.get("/list/{limit}/{offset}", response_model=List[SongResponse], status_code=status.HTTP_200_OK)
 def get_all_user_songs(
-    db: Session = Depends(get_db), user_dict=Depends(auth_middleware)
+    limit: int = 100,
+    offset: int = 0,
+    db: Session = Depends(get_db), 
+    user_dict=Depends(auth_middleware)
 ):
     try:
         songs = fetch_all_user_songs(db, user_dict)
