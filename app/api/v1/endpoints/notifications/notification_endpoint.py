@@ -1,5 +1,6 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from firebase_admin import messaging
+from app.middleware.auth_middleware import auth_middleware
 from app.schemas.notification_schema import (
     SendToTopicRequest,
     SendToMultipleRequest,
@@ -10,7 +11,7 @@ router = APIRouter()
 
 
 @router.post("/notify/token")
-async def send_to_token(request: SendToTokenRequest):
+async def send_to_token(request: SendToTokenRequest, user_dict: dict = Depends(auth_middleware)):
     """Send push notification to a single device."""
     try:
         message = messaging.Message(
@@ -49,7 +50,7 @@ async def send_to_token(request: SendToTokenRequest):
 
 
 @router.post("/notify/topic")
-async def send_to_topic(request: SendToTopicRequest):
+async def send_to_topic(request: SendToTopicRequest, user_dict: dict = Depends(auth_middleware)):
     """Send push notification to all devices subscribed to a topic."""
     try:
         message = messaging.Message(
@@ -77,7 +78,7 @@ async def send_to_topic(request: SendToTopicRequest):
 
 
 @router.post("/notify/multicast")
-async def send_to_multiple(request: SendToMultipleRequest):
+async def send_to_multiple(request: SendToMultipleRequest, user_dict: dict = Depends(auth_middleware)):
     """Send push notification to multiple devices (up to 500 tokens)."""
     if len(request.tokens) > 500:
         raise HTTPException(status_code=400, detail="Maximum 500 tokens per request.")

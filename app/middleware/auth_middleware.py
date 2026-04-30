@@ -3,17 +3,24 @@ from fastapi import HTTPException, Header
 import jwt
 
 
-def auth_middleware(x_auth_token: str | None = Header(default=None)):
+def auth_middleware(
+    x_auth_token: str | None = Header(default=None),
+    authorization: str | None = Header(default=None)
+):
     try:
-        # Get token from header
-        if not x_auth_token:
-            return None
+        # Get token from header (support both x-auth-token and Bearer token)
+        token = x_auth_token
+        if not token and authorization and authorization.startswith("Bearer "):
+            token = authorization.split(" ")[1]
+
+        if not token:
+            raise HTTPException(401, "No auth token found, Authorization denied")
 
         # Decode token
         SECRET_KEY = os.getenv("SECRET_KEY")
         if not SECRET_KEY:
             raise ValueError("SECRET_KEY is not set in environment variables")
-        auth_token = jwt.decode(x_auth_token, SECRET_KEY, ["HS256"])
+        auth_token = jwt.decode(token, SECRET_KEY, ["HS256"])
 
         if not auth_token:
             raise HTTPException(
