@@ -1,25 +1,11 @@
+import resend
+from app.core.config import settings
 from datetime import datetime
 
-from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
-from sqlalchemy import DateTime
-from sqlalchemy import DateTime
-
-from app.core.config import settings
-
-mail_config = ConnectionConfig(
-    MAIL_USERNAME=settings.MAIL_USERNAME,
-    MAIL_PASSWORD=settings.MAIL_PASSWORD,
-    MAIL_FROM=settings.MAIL_FROM,
-    MAIL_FROM_NAME=settings.MAIL_FROM_NAME,
-    MAIL_PORT=settings.MAIL_PORT,
-    MAIL_SERVER=settings.MAIL_SERVER,
-    MAIL_STARTTLS=settings.MAIL_STARTTLS,
-    MAIL_SSL_TLS=settings.MAIL_SSL_TLS,
-    USE_CREDENTIALS=True,
-    VALIDATE_CERTS=True,
-)
+resend.api_key = settings.RESEND_API_KEY
 
 year = datetime.now().year
+
 
 
 def _render_registration_html(first_name: str, last_name: str) -> str:
@@ -53,17 +39,10 @@ def _render_registration_html(first_name: str, last_name: str) -> str:
     </html>
     """
 
-
 async def send_registration_email(email: str, first_name: str, last_name: str) -> None:
-    if not all([settings.MAIL_SERVER, settings.MAIL_FROM, settings.MAIL_USERNAME, settings.MAIL_PASSWORD]):
-        raise RuntimeError("Email settings are not fully configured.")
-
-    message = MessageSchema(
-        subject="Welcome to Music App",
-        recipients=[email],
-        body=_render_registration_html(first_name, last_name),
-        subtype=MessageType.html,
-    )
-
-    fm = FastMail(mail_config)
-    await fm.send_message(message)
+    resend.Emails.send({
+        "from": f"{settings.MAIL_FROM_NAME} <onboarding@resend.dev>",
+        "to": email,
+        "subject": "Welcome to Music App",
+        "html": _render_registration_html(first_name, last_name),
+    })
