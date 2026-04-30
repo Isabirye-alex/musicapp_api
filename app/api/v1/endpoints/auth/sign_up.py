@@ -25,14 +25,12 @@ def sign_up(
 
     try:
         new_user = create_user(db, user)
-        print("Sending Email........")
         background_tasks.add_task(
             send_registration_email,
             new_user.email,
             new_user.first_name,
             new_user.last_name,
         )
-        print("Email Sent........")
 
         return {"status": "success", "message": "User created successfully"}
 
