@@ -31,7 +31,7 @@ def _render_registration_html(first_name: str, last_name: str) -> str:
           </tr>
           <tr>
             <td style="padding: 24px; text-align: center; font-size: 12px; color: #94a3b8; border-top: 1px solid #e2e8f0;">
-                 &copy; {year} Music App. All rights reserved.
+                 &copy; {year} Atlas-Music. All rights reserved.
         </td>
           </tr>
         </table>

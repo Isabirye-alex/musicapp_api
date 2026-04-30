@@ -15,6 +15,6 @@ router = APIRouter()
 def get_users(
     db: Session = Depends(get_db), user_dict: dict = Depends(auth_middleware)
 ):
-    users = fetch_users(db, user_dict["id"])
+    users = fetch_users(db)
 
     return users
