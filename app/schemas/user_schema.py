@@ -9,7 +9,7 @@ class UserCreate(BaseModel):
     first_name: str
     last_name: str
     email: EmailStr
-    password_hash: str = Field(min_length=8, max_length=64)
+    password_hash: str = Field(min_length=4, max_length=64)
     role: Optional[str] = Field(default="user")
 
     @field_validator("first_name", "last_name")
@@ -48,7 +48,6 @@ class UserUpdate(BaseModel):
     first_name: Optional[str] = Field(default=None, min_length=1, max_length=250)
     last_name: Optional[str] = Field(default=None, min_length=1, max_length=250)
     email: Optional[EmailStr] = None
-    
 
     @field_validator("first_name", "last_name", mode="before")
     @classmethod
@@ -59,7 +58,9 @@ class UserUpdate(BaseModel):
         if not stripped:
             raise ValueError("Name fields cannot be blank or whitespace only")
         if not re.match(r"^[a-zA-Z\s\-']+$", stripped):
-            raise ValueError("Name fields can only contain letters, spaces, hyphens, and apostrophes")
+            raise ValueError(
+                "Name fields can only contain letters, spaces, hyphens, and apostrophes"
+            )
         return stripped
 
 
