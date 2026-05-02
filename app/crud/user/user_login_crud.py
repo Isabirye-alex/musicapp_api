@@ -10,8 +10,12 @@ def login_user(db: Session, email: str, password: str):
     if not user:
         return None, "Invalid email or password"
 
-    # 2. Check password matches
-    if not verify_password(password, user.password_hash): # type: ignore
+    # 2. Check if user signed up with Google
+    if user.password_hash == "!google_auth_sign_in":
+        return None, "This account uses Google Sign-In. Please use the Google button to log in."
+
+    # 3. Check password matches
+    if not verify_password(password, user.password_hash):
         return None, "Invalid email or password"
 
     return user, None
