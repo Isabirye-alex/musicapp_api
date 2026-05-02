@@ -10,7 +10,12 @@ from app.services.email_service import send_registration_email
 
 GOOGLE_CLIENT_ID = settings.GOOGLE_CLIENT_ID
 
-def google_sign_in(token: str, db: Session,background_tasks: BackgroundTasks,) -> dict:
+
+def google_sign_in(
+    token: str,
+    db: Session,
+    background_tasks: BackgroundTasks,
+) -> dict:
     # 1. Verify token with Google
     try:
         user_info = id_token.verify_oauth2_token(
@@ -22,31 +27,26 @@ def google_sign_in(token: str, db: Session,background_tasks: BackgroundTasks,) -
         raise HTTPException(status_code=401, detail="Invalid Google token")
 
     # 2. Extract user info
-    email      = user_info["email"]
+    email = user_info["email"]
     first_name = user_info.get("given_name", "")
-    last_name  = user_info.get("family_name", "")
+    last_name = user_info.get("family_name", "")
     avatar_url = user_info.get("picture")
 
     # 3. Find or create user
     user = db.query(UserModel).filter(UserModel.email == email).first()
 
     if not user:
-    user = UserModel(
-        email=email,
-        first_name=first_name,
-        last_name=last_name,
-        user_avatar=avatar_url,
-        password_hash="!google_auth_sign_in",
-    )
-    db.add(user)
-    db.commit()
-    db.refresh(user)
-    
-    # Only send email for new users, catch errors silently
-    try:
-        background_tasks.add_task(send_registration_email, user.email, user.first_name)
-    except Exception:
-        pass
+        user = UserModel(
+            email=email,
+            first_name=first_name,
+            last_name=last_name,
+            user_avatar=avatar_url,
+            password_hash="!google_auth_sign_in",
+        )
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+
     # 4. Block deactivated accounts
     if not user.is_active:
         raise HTTPException(status_code=403, detail="Account is deactivated")
