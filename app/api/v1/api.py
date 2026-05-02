@@ -12,6 +12,7 @@ from app.api.v1.endpoints.user.user_delete import router as user_delete_router
 from app.api.v1.endpoints.notifications.notification_endpoint import router as notification_router
 from app.api.v1.endpoints.user.user_update import router as user_update_router
 from app.api.v1.endpoints.tokens.register_token import router as register_token_router
+from app.api.v1.endpoints.auth.google_sign_in import router as google_sign_in_router
 
 api_router = APIRouter()
 api_router.include_router(signup_router, prefix="/auth", tags=["auth"])
@@ -25,3 +26,4 @@ api_router.include_router(user_update_router, prefix="/users", tags=["users"])
 api_router.include_router(user_delete_router, prefix="/users", tags=["users"])
 api_router.include_router(notification_router, prefix="/notifications", tags=["notifications"])
 api_router.include_router(register_token_router, prefix="/tokens", tags=["tokens"])
+api_router.include_router(google_sign_in_router, prefix="/auth", tags=["auth"])

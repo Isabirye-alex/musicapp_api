@@ -25,9 +25,9 @@ def auth_middleware(
         if not uid:
             raise HTTPException(401, "Token payload missing user id")
 
-        return {"id": uid, "access_token": auth_token}  # ← fixed typo: acccess_token
+        return {"id": uid, "access_token": auth_token} # ← return decoded token for downstream use
 
     except jwt.ExpiredSignatureError:
-        raise HTTPException(401, "Token has expired")  # ← more specific than PyJWTError
+        raise HTTPException(401, "Token has expired") 
     except jwt.PyJWTError:
         raise HTTPException(401, "Token is invalid, Authorization failed")

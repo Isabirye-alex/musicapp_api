@@ -6,7 +6,6 @@ from app.models.user_model import UserModel
 from app.schemas.user_schema import UserCreate
 
 
-
 def create_user(db: Session, user: UserCreate):
     hashed = hash_password(user.password_hash)
     db_user = UserModel(
@@ -15,7 +14,7 @@ def create_user(db: Session, user: UserCreate):
         last_name=user.last_name,
         email=user.email,
         password_hash=hashed,
-        role=user.role
+        role=user.role,
     )
     db.add(db_user)
     db.commit()
