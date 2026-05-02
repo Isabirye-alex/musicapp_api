@@ -5,8 +5,9 @@ from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
 from fastapi import HTTPException
 from app.models.user_model import UserModel
+from app.core.config import settings
 
-GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_ID = settings.GOOGLE_CLIENT_ID
 
 def google_sign_in(token: str, db: Session) -> dict:
     # 1. Verify token with Google

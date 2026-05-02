@@ -16,6 +16,8 @@ class Settings(BaseSettings):
 
     #  Firebase
     FIREBASE_CREDENTIALS: str
+    # Google Sign-In
+    GOOGLE_CLIENT_ID: str
 
     # App
     SECRET_KEY: str
