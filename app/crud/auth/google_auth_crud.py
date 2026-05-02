@@ -31,23 +31,22 @@ def google_sign_in(token: str, db: Session,background_tasks: BackgroundTasks,) -
     user = db.query(UserModel).filter(UserModel.email == email).first()
 
     if not user:
-        user = UserModel(
-            email=email,
-            first_name=first_name,
-            last_name=last_name,
-            user_avatar=avatar_url,
-            password_hash="!google_auth_sign_in",
-        )
-        db.add(user)
-        background_tasks.add_task(
-            send_registration_email,
-            user.email,
-            user.first_name,
-            user.last_name,
-        )
-        db.commit()
-        db.refresh(user)
-
+    user = UserModel(
+        email=email,
+        first_name=first_name,
+        last_name=last_name,
+        user_avatar=avatar_url,
+        password_hash="!google_auth_sign_in",
+    )
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    
+    # Only send email for new users, catch errors silently
+    try:
+        background_tasks.add_task(send_registration_email, user.email, user.first_name)
+    except Exception:
+        pass
     # 4. Block deactivated accounts
     if not user.is_active:
         raise HTTPException(status_code=403, detail="Account is deactivated")
