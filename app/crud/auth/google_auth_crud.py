@@ -3,13 +3,14 @@ import os
 from sqlalchemy.orm import Session
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
-from fastapi import HTTPException
+from fastapi import BackgroundTasks, HTTPException
 from app.models.user_model import UserModel
 from app.core.config import settings
+from app.services.email_service import send_registration_email
 
 GOOGLE_CLIENT_ID = settings.GOOGLE_CLIENT_ID
 
-def google_sign_in(token: str, db: Session) -> dict:
+def google_sign_in(token: str, db: Session,background_tasks: BackgroundTasks,) -> dict:
     # 1. Verify token with Google
     try:
         user_info = id_token.verify_oauth2_token(
@@ -38,6 +39,12 @@ def google_sign_in(token: str, db: Session) -> dict:
             password_hash="!google_auth_sign_in",
         )
         db.add(user)
+        background_tasks.add_task(
+            send_registration_email,
+            user.email,
+            user.first_name,
+            user.last_name,
+        )
         db.commit()
         db.refresh(user)
 
