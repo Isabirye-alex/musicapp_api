@@ -7,7 +7,6 @@ resend.api_key = settings.RESEND_API_KEY
 year = datetime.now().year
 
 
-
 def _render_registration_html(first_name: str, last_name: str) -> str:
     return f"""
     <html>
@@ -24,7 +23,7 @@ def _render_registration_html(first_name: str, last_name: str) -> str:
               <p>Hi <strong>{first_name} {last_name}</strong>,</p>
               <p>Thanks for registering with Music App. We're excited to have you on board.</p>
               <p style="margin: 24px 0;">
-                <a href="https://your-music-app.example.com" style="display: inline-block; background: #4f46e5; color: #ffffff; text-decoration: none; padding: 12px 24px; border-radius: 8px;">Visit Music App</a>
+                <a href="https://musicapp-web.vercel.app/" style="display: inline-block; background: #4f46e5; color: #ffffff; text-decoration: none; padding: 12px 24px; border-radius: 8px;">Visit Music App</a>
               </p>
               <p style="color: #64748b; font-size: 14px;">If you didn't create this account, please contact support immediately.</p>
             </td>
@@ -39,10 +38,13 @@ def _render_registration_html(first_name: str, last_name: str) -> str:
     </html>
     """
 
+
 async def send_registration_email(email: str, first_name: str, last_name: str) -> None:
-    resend.Emails.send({
-        "from": f"{settings.MAIL_FROM_NAME} <onboarding@resend.dev>",
-        "to": email,
-        "subject": "Welcome to Music App",
-        "html": _render_registration_html(first_name, last_name),
-    })
+    resend.Emails.send(
+        {
+            "from": f"{settings.MAIL_FROM_NAME} <onboarding@resend.dev>",
+            "to": email,
+            "subject": "Welcome to Music App",
+            "html": _render_registration_html(first_name, last_name),
+        }
+    )
