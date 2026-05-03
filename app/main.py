@@ -140,10 +140,3 @@ def root():
         "version": "1.0.0",
     }
 
-app = FastAPI(
-    docs_url="/api/v1/docs",
-    
-    title="ATLAS MUSIC API",
-    description="A comprehensive Music Streaming API that serves as the backend for managing music metadata, user authentication, and streaming services. This API provides endpoints for tracks, albums, artists, and playlists, supporting a full-featured music application experience.",
-    version="1.0.0",
-)
