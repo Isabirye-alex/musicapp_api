@@ -7,6 +7,7 @@ from app.models.user_model import UserModel
 from app.models.song_model import SongModel
 from app.models.favorite_songs_model import FavoriteSongsModel
 from app.models.tokens.device_token_model import DeviceTokenModel
+from app.models.recently_played_song_model import RecentlyPlayedSongModel
 
 from app.core.config import settings
 

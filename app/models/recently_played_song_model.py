@@ -1,4 +1,4 @@
-from sqlalchemy import Column, DateTime, ForeignKey, func
+from sqlalchemy import Column, DateTime, ForeignKey, func, TEXT
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from app.core.base import Base
@@ -14,7 +14,7 @@ class RecentlyPlayedSongModel(Base):
         nullable=False,
     )
     song_id = Column(
-        UUID(as_uuid=True),                             
+        TEXT,                             
         ForeignKey("songs.song_id", ondelete="CASCADE"),
         primary_key=True,
         nullable=False,
