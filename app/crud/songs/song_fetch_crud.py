@@ -6,8 +6,8 @@ from app.models.song_model import SongModel
 from app.models.favorite_songs_model import FavoriteSongsModel
 
 
-def fetch_all_user_songs(db: Session, user_dict: dict):
-    songs = db.query(SongModel).filter(SongModel.user_id == user_dict["id"]).all()
+def fetch_all_user_songs(db: Session, user_dict: dict, limit: int, offset: int):
+    songs = db.query(SongModel).filter(SongModel.user_id == user_dict["id"]).offset(offset).limit(limit).all()
 
     for song in songs:
         favorite = (
