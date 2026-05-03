@@ -13,6 +13,9 @@ from app.api.v1.endpoints.notifications.notification_endpoint import router as n
 from app.api.v1.endpoints.user.user_update import router as user_update_router
 from app.api.v1.endpoints.tokens.register_token import router as register_token_router
 from app.api.v1.endpoints.auth.google_sign_in import router as google_sign_in_router
+from app.api.v1.endpoints.songs.get_recently_played_songs import router as get_recently_played_songs_router
+from app.api.v1.endpoints.songs.insert_recently_played_songs_endpoint import router as insert_recently_played_songs_router
+
 
 api_router = APIRouter()
 api_router.include_router(signup_router, prefix="/auth", tags=["auth"])
@@ -27,3 +30,5 @@ api_router.include_router(user_delete_router, prefix="/users", tags=["users"])
 api_router.include_router(notification_router, prefix="/notifications", tags=["notifications"])
 api_router.include_router(register_token_router, prefix="/tokens", tags=["tokens"])
 api_router.include_router(google_sign_in_router, prefix="/auth", tags=["auth"])
+api_router.include_router(get_recently_played_songs_router, prefix="/songs/recent/page", tags=["songs"])
+api_router.include_router(insert_recently_played_songs_router, prefix="/songs/recent/new", tags=["songs"])
