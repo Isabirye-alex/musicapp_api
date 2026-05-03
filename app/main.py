@@ -36,7 +36,7 @@ app = FastAPI(
     openapi_url="/api/v1/openapi.json",
     
     title="🎵 ATLAS MUSIC API",
-    summary="A modern music streaming backend built with FastAPI.",
+    summary="A modern music streaming backend built with FastAPI that serves as the backend for managing music metadata, user authentication, and streaming services. This API provides endpoints for tracks, albums, artists, and playlists, supporting a full-featured music application experience",
     description="""
 ## Welcome to the Atlas Music API 🎶
 
@@ -139,3 +139,11 @@ def root():
         "app": "Atlas Music API",
         "version": "1.0.0",
     }
+
+app = FastAPI(
+    docs_url="/api/v1/docs",
+    
+    title="ATLAS MUSIC API",
+    description="A comprehensive Music Streaming API that serves as the backend for managing music metadata, user authentication, and streaming services. This API provides endpoints for tracks, albums, artists, and playlists, supporting a full-featured music application experience.",
+    version="1.0.0",
+)
