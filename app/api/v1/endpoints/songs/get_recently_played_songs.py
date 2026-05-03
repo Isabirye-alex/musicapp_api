@@ -7,7 +7,7 @@ from app.crud.songs.recently_played_songs_crud import get_recently_played_songs
 from app.schemas.song_schema import SongResponse
 from typing import List
 
-router = APIRouter("/")
+router = APIRouter()
 
 
 @router.get("/", status_code=status.HTTP_200_OK, response_model=List[SongResponse])

@@ -3,10 +3,9 @@ from sqlalchemy.orm import Session
 from app.crud.songs.recently_played_songs_crud import insert_recently_played
 from app.db.session import get_db
 from app.middleware.auth_middleware import auth_middleware
-from app.crud.songs.song_fetch_crud import fetch_all_user_songs
 from app.crud.songs.recently_played_songs_crud import insert_recently_played
 
-router = APIRouter("/")
+router = APIRouter()
 
 
 @router.post("/", status_code=status.HTTP_200_OK, response_model=dict)
