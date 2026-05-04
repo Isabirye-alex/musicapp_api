@@ -11,7 +11,7 @@ router = APIRouter()
 
 
 @router.get("/", status_code=status.HTTP_200_OK, response_model=List[SongResponse])
-def get_recently_played_songs(
+def get_recently_played(
     db: Session = Depends(get_db),
     user_dict: dict = Depends(auth_middleware),
     limit: int = Query(default=10),
