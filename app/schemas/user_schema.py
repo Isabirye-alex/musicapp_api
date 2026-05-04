@@ -38,6 +38,7 @@ class UserResponse(BaseModel):
     email: EmailStr
     role: str
     is_active: bool
+    user_avatar: str
     created_at: datetime
     updated_at: datetime
 
@@ -48,6 +49,7 @@ class UserUpdate(BaseModel):
     first_name: Optional[str] = Field(default=None, min_length=1, max_length=250)
     last_name: Optional[str] = Field(default=None, min_length=1, max_length=250)
     email: Optional[EmailStr] = None
+    user_avatar: Optional[str] = None
 
     @field_validator("first_name", "last_name", mode="before")
     @classmethod
