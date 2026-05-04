@@ -38,7 +38,7 @@ class UserResponse(BaseModel):
     email: EmailStr
     role: str
     is_active: bool
-    user_avatar: str
+    user_avatar: Optional[str] = None
     created_at: datetime
     updated_at: datetime
 
