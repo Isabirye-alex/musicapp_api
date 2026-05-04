@@ -10,7 +10,7 @@ from typing import List
 router = APIRouter()
 
 
-@router.post("/", status_code=status.HTTP_200_OK, response_model=SongResponse)
+@router.post("/", status_code=status.HTTP_201_CREATED, response_model=SongResponse)
 def add_recently_played_song(
     db: Session = Depends(get_db),
     user_dict: dict = Depends(auth_middleware),
