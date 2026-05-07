@@ -28,7 +28,7 @@ def get_all_platform_songs(
     user_dict: dict | None = Depends(auth_middleware),
 ):
     try:
-        songs = fetch_all_platform_songs(db, limit, offset, sort, user_dict)
+        songs = fetch_all_platform_songs(db, limit, offset, sort, user_dict, search)
         return songs
     except Exception as e:
         raise RuntimeError(f"Error retrieving songs: {e}")
