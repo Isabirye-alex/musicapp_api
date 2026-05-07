@@ -1,31 +1,29 @@
 import json
-import cloudinary
 from contextlib import asynccontextmanager
+
+import firebase_admin
 from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import JSONResponse
-from app.core.base import Base
-from app.db.session import engine
-from app.api.v1.api import api_router
-from app.middleware.cloudinary_middleware import configure_cloudinary
 from firebase_admin import credentials
-import firebase_admin
+
+from app.api.v1.api import api_router
 from app.core.config import settings
+from app.middleware.cloudinary_middleware import configure_cloudinary
 
 
-# ── Lifespan — startup / shutdown ────────────────────
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # startup
     configure_cloudinary()
     cred = credentials.Certificate(json.loads(settings.FIREBASE_CREDENTIALS))
     firebase_admin.initialize_app(cred)
-    print("🚀 Atlas Music API is live")
+    print("Atlas Music API is live")
     yield
     # shutdown
-    print("🛑 Atlas Music API shutting down")
+    print("Atlas Music API shutting down")
 
 
 app = FastAPI(
@@ -35,22 +33,22 @@ app = FastAPI(
     redoc_url="/api/v1/redoc",
     openapi_url="/api/v1/openapi.json",
     
-    title="🎵 ATLAS MUSIC API",
+    title="ATLAS MUSIC API",
     summary="A modern music streaming backend built with FastAPI that serves as the backend for managing music metadata, user authentication, and streaming services. This API provides endpoints for tracks, albums, artists, and playlists, supporting a full-featured music application experience",
     description="""
 ## Welcome to the Atlas Music API 🎶
 
-Built with **FastAPI** · Powered by **PostgreSQL** · Stored on **Cloudinary**
+Built with FastAPI · Powered by PostgreSQL · Stored on Cloudinary
 
 ---
 
-### 🔐 Authentication
+###Authentication
 All protected endpoints require an `x-auth-token` header containing a valid JWT.
 Supports both **email/password** and **Google Sign-In**.
 
 ---
 
-#  📦 Core Features
+# Core Features
 
 🎵 Songs | Upload, stream, and manage songs |
 👤 Users | Register, login, update profile |
