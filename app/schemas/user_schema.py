@@ -1,15 +1,17 @@
-from typing import Optional
-import re
 from datetime import datetime
+from typing import Optional
 from uuid import UUID
-from pydantic import BaseModel, EmailStr, Field, ConfigDict, field_validator
+
+import re
+
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 
 
 class UserCreate(BaseModel):
-    first_name: str
-    last_name: str
+    first_name: str = Field(min_length=1, max_length=100)
+    last_name: str = Field(min_length=1, max_length=100)
     email: EmailStr
-    password_hash: str = Field(min_length=4, max_length=64)
+    password: str = Field(min_length=6, max_length=128)
     role: Optional[str] = Field(default="user")
 
     @field_validator("first_name", "last_name")
@@ -19,18 +21,16 @@ class UserCreate(BaseModel):
             raise ValueError("Field cannot be blank or whitespace")
         return v.strip()
 
-    @field_validator("password_hash")
+    @field_validator("password")
     @classmethod
     def password_strength(cls, v: str) -> str:
-        if not any(c.isdigit() for c in v):
-            raise ValueError("Password must contain at least one number")
-        if not any(c.isupper() for c in v):
-            raise ValueError("Password must contain at least one uppercase letter")
+        if len(v) < 6:
+            raise ValueError("Password must be at least 6 characters long")
         return v
 
 
 class UserResponse(BaseModel):
-    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
+    model_config = ConfigDict(from_attributes=True, validate_by_name=True)
 
     id: UUID
     first_name: str
@@ -44,7 +44,7 @@ class UserResponse(BaseModel):
 
 
 class UserUpdate(BaseModel):
-    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
+    model_config = ConfigDict(from_attributes=True, validate_by_name=True)
 
     first_name: Optional[str] = Field(default=None, min_length=1, max_length=250)
     last_name: Optional[str] = Field(default=None, min_length=1, max_length=250)
@@ -68,7 +68,7 @@ class UserUpdate(BaseModel):
 
 class LoginRequest(BaseModel):
     email: EmailStr
-    password_hash: str
+    password: str
 
 
 class AuthResponse(BaseModel):

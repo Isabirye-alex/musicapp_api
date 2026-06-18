@@ -1,10 +1,12 @@
-from fastapi import APIRouter, HTTPException, status, Depends, Query
+from typing import List
+
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
+
+from app.api.dependencies.auth import get_current_user_optional
 from app.crud.songs.song_fetch_crud import fetch_all_platform_songs
 from app.db.session import get_db
-from app.middleware.auth_middleware import auth_middleware
 from app.schemas.song_schema import SongResponse
-from typing import List
 
 router = APIRouter()
 
@@ -14,21 +16,25 @@ router = APIRouter()
     response_model=List[SongResponse],
     status_code=status.HTTP_200_OK,
 )
-@router.get(
-    "/all/{limit}/{offset}",
-    response_model=List[SongResponse],
-    status_code=status.HTTP_200_OK,
-)
 def get_all_platform_songs(
-    limit: int = 100,
-    offset: int = 0,
-    db: Session = Depends(get_db),
+    limit: int = Query(default=100, ge=1),
+    offset: int = Query(default=0, ge=0),
     sort: str = Query(default="newest"),
-    search: str = Query(default=None),
-    user_dict: dict | None = Depends(auth_middleware),
+    search: str | None = Query(default=None),
+    db: Session = Depends(get_db),
+    user_dict: dict | None = Depends(get_current_user_optional),
 ):
     try:
-        songs = fetch_all_platform_songs(db, limit, offset, sort, user_dict, search)
-        return songs
-    except Exception as e:
-        raise RuntimeError(f"Error retrieving songs: {e}")
+        return fetch_all_platform_songs(
+            db,
+            limit=limit,
+            offset=offset,
+            sort=sort,
+            user_dict=user_dict,
+            search=search,
+        )
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error retrieving songs: {exc}",
+        )

@@ -1,34 +1,23 @@
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    # Database
-    DATABASE_URL: str
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        extra="ignore",
+    )
 
-    # Cloudinary
+    DATABASE_URL: str
     API_KEY: str
     API_SECRET: str
     CLOUD_NAME: str
-
-    # Email
     RESEND_API_KEY: str
     MAIL_FROM_NAME: str
-
-    #  Firebase
     FIREBASE_CREDENTIALS: str
-    # Google Sign-In
     GOOGLE_CLIENT_ID: str
-
-    # App
     SECRET_KEY: str
-
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
-
-    @property
-    def DATABASE_URL(self) -> str:
-        return f"{self.DATABASE_URL}"
+    ALLOWED_ORIGINS: str = "*"
 
 
 settings = Settings()

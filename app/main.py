@@ -1,13 +1,11 @@
 import json
 from contextlib import asynccontextmanager
 
-import firebase_admin
 from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import JSONResponse
-from firebase_admin import credentials
 
 from app.api.v1.api import api_router
 from app.core.config import settings
@@ -16,102 +14,65 @@ from app.middleware.cloudinary_middleware import configure_cloudinary
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # startup
     configure_cloudinary()
-    cred = credentials.Certificate(json.loads(settings.FIREBASE_CREDENTIALS))
-    firebase_admin.initialize_app(cred)
-    print("Atlas Music API is live")
+
+    try:
+        import firebase_admin
+        from firebase_admin import credentials
+
+        if not firebase_admin._apps:
+            cred = credentials.Certificate(json.loads(settings.FIREBASE_CREDENTIALS))
+            firebase_admin.initialize_app(cred)
+    except Exception as exc:
+        app.state.firebase_warning = str(exc)
+
     yield
-    # shutdown
-    print("Atlas Music API shutting down")
 
 
 app = FastAPI(
     lifespan=lifespan,
-    
     docs_url="/api/v1/docs",
     redoc_url="/api/v1/redoc",
     openapi_url="/api/v1/openapi.json",
-    
-    title="ATLAS MUSIC API",
-    summary="A modern music streaming backend built with FastAPI that serves as the backend for managing music metadata, user authentication, and streaming services. This API provides endpoints for tracks, albums, artists, and playlists, supporting a full-featured music application experience",
-    description="""
-## Welcome to the Atlas Music API 🎶
-
-Built with FastAPI · Powered by PostgreSQL · Stored on Cloudinary
-
----
-
-###Authentication
-All protected endpoints require an `x-auth-token` header containing a valid JWT.
-Supports both **email/password** and **Google Sign-In**.
-
----
-
-# Core Features
-
-🎵 Songs | Upload, stream, and manage songs |
-👤 Users | Register, login, update profile |
-❤️Favorites | Toggle and fetch favorite songs |
-🕐 Recently Played | Auto-tracked listening history |
-🔔 Notifications | Firebase push notifications |
-☁️ File Storage | Cloudinary for audio and thumbnails |
-
----
-
-1. Register at `POST /api/v1/auth/signup`
-2. Login at `POST /api/v1/auth/signin` or `POST /api/v1/auth/google`
-3. Use the returned token in the `x-auth-token` header
-4. Explore the endpoints below
-    """,
+    title="Atlas Music API",
+    summary=(
+        "Backend API for user management, song metadata, favorites, "
+        "recent listens, notifications, and media uploads."
+    ),
+    description=(
+        "A FastAPI backend for music applications with auth, song management, "
+        "favorites, recent playback tracking, and notification support."
+    ),
     version="1.0.0",
-    
     contact={
-        "name": "Little Tech Support",
+        "name": "Atlas Music Support",
         "email": "support@atlasmusic.com",
         "url": "https://atlasmusic.com",
     },
-    
     license_info={
         "name": "MIT License",
         "url": "https://opensource.org/licenses/MIT",
     },
-    
     openapi_tags=[
-        {
-            "name": "Health",
-            "description": "API health check endpoints.",
-        },
-        {
-            "name": "Auth",
-            "description": "User registration, login, Google Sign-In, and profile.",
-        },
-        {
-            "name": "Songs",
-            "description": "Upload, fetch, and manage songs.",
-        },
-        {
-            "name": "Favorites",
-            "description": "Toggle and retrieve favorite songs.",
-        },
-        {
-            "name": "Recently Played",
-            "description": "Fetch and update listening history.",
-        },
-        {
-            "name": "Notifications",
-            "description": "Firebase push notification registration.",
-        },
+        {"name": "Health", "description": "Health and readiness checks."},
+        {"name": "Auth", "description": "Authentication and account management."},
+        {"name": "Users", "description": "Profile and account-related operations."},
+        {"name": "Songs", "description": "Song upload, fetch, and management endpoints."},
+        {"name": "Favorites", "description": "Favorite song operations."},
+        {"name": "Recently Played", "description": "Recent listening history endpoints."},
+        {"name": "Notifications", "description": "Push notification delivery endpoints."},
     ],
 )
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=False,
+    allow_origins=settings.ALLOWED_ORIGINS.split(",") if settings.ALLOWED_ORIGINS else ["*"],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 app.add_middleware(GZipMiddleware, minimum_size=1000)
+
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
@@ -121,14 +82,19 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         content={"detail": errors},
     )
 
+
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        content={"detail": "An unexpected error occurred. Please try again."},
+        content={
+            "detail": "An unexpected error occurred. Please try again later."
+        },
     )
 
+
 app.include_router(api_router, prefix="/api/v1")
+
 
 @app.get("/", tags=["Health"])
 def root():
@@ -138,3 +104,7 @@ def root():
         "version": "1.0.0",
     }
 
+
+@app.get("/health", tags=["Health"])
+def health_check():
+    return {"status": "ok"}
